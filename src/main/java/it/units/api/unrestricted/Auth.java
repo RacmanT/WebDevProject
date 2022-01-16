@@ -4,16 +4,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
-import com.google.gson.Gson;
-import it.units.api.TripResource;
 import it.units.entities.User;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
@@ -27,7 +23,6 @@ from frontend but is not available for free nor allow free trial.
 @Path("/register")
 public class Auth {
 
-    private final Gson gson = new Gson();
     private final Logger log = Logger.getLogger(Auth.class.toString());
 
     @POST

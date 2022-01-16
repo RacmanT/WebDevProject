@@ -39,6 +39,8 @@ export default {
     };
   },
 
+ 
+
   methods: {
     zoomUpdated(zoom) {
       this.zoom = zoom;
@@ -48,23 +50,6 @@ export default {
     },
     boundsUpdated(bounds) {
       this.bounds = bounds;
-    },
-
-    drawLine(geojson) {
-      let temp = [];
-      geojson.features.forEach((feature) => {
-        if (feature.geometry.type === "Point") {
-          temp.push(feature.geometry.coordinates);
-        }
-      });
-      geojson.features.push({
-        type: "Feature",
-        properties: {},
-        geometry: {
-          type: "LineString",
-          coordinates: temp,
-        },
-      });
     },
   },
 };

@@ -1,5 +1,7 @@
 package it.units.entities;
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 
 public class Location implements Serializable {
@@ -19,15 +21,11 @@ public class Location implements Serializable {
     public Location() {
     }
 
-    @Override
+  /*  @Override
     public String toString() {
-        return "{" +
-                "longitude=" + longitude +
-                ", latitude=" + latitude +
-                ", name='" + name + '\'' +
-                ", important=" + important +
-                '}';
-    }
+       // return new Gson().toJson(this);
+        return new Gson().toJson(this, Location.class);
+    }*/
 
     public double getLongitude() {
         return longitude;

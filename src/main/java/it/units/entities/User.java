@@ -1,5 +1,7 @@
 package it.units.entities;
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 
 public class User implements Serializable{
@@ -16,6 +18,12 @@ public class User implements Serializable{
         this.email = email;
         this.password = password;
     }
+
+/*    @Override
+    public String toString() {
+        //return new Gson().toJson(this);
+        return new Gson().toJson(this, User.class);
+    }*/
 
     public String getUsername() {
         return username;

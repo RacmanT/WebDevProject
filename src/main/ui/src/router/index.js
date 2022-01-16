@@ -1,43 +1,53 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Home from "../views/Home.vue";
+import Auth from "../views/Auth.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: "/",
+    name: "Home",
+    component: Home,
+    meta: { requiresAuth: true },
   },
   {
-    path: '/signup',
-    name: 'Sign up',
-    component: () => import('../views/SignUp.vue')
+    path: "/add",
+    name: "Add trip",
+    component: () => import("../views/AddTrip.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/signup",
+    name: "Sign up",
+    component: () => import("../views/SignUp.vue"),
   },
 
   {
-    path: '/signin',
-    name: 'Sign in',
-    component: () => import('../views/SignIn.vue')
+    path: "/signin",
+    name: "Sign in",
+    component: () => import("../views/SignIn.vue"),
   },
 
   {
-    path: '/auth',
-    name: 'Authentication',
-    component: () => import('../views/Auth.vue')
+    path: "/auth",
+    name: "Authentication",
+    component: Auth,
+    meta: { requiresAuth: false },
   },
-  {
-    path: '/add',
-    name: 'Add trip',
-    component: () => import('../views/AddTrip.vue')
-  },
-
-
-]
+];
 
 const router = new VueRouter({
-  routes
+  routes,
+});
+
+const user = { isAuthenticated: true };
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth && !user.isAuthenticated) next({ name: "Authentication" });
+  else if (!to.meta.requiresAuth && user.isAuthenticated) next({ name: "Home" });
+  else next()
 })
 
-export default router
+export default router;

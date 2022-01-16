@@ -1,7 +1,6 @@
-package it.units.api;
+package it.units.api.restricted;
 
 import com.google.firebase.cloud.FirestoreClient;
-import com.google.gson.Gson;
 import it.units.entities.Location;
 import it.units.entities.Trip;
 
@@ -22,7 +21,6 @@ import java.util.logging.Logger;
 public class TripResource {
 
     private final Logger log = Logger.getLogger(TripResource.class.toString());
-    private final Gson gson = new Gson();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -35,7 +33,7 @@ public class TripResource {
                     .collection("trips")
                     .get().get().toObjects(Trip.class);
 
-            return Response.ok(trips.toString()).build();
+            return Response.ok(trips).build();
 
         } catch (InterruptedException | ExecutionException e) {
             log.severe("Error at getTrip: " + e.getMessage());
@@ -56,7 +54,7 @@ public class TripResource {
                     .document(trip.getId())
                     .set(trip).get();
 
-            return Response.ok(trip.toString()).build();
+            return Response.ok(trip).build();
         } catch (InterruptedException | ExecutionException e) {
             log.severe("Error at setTrip: " + e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -68,7 +66,6 @@ public class TripResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateTrip(@Context HttpServletRequest request, Trip trip) {
-        //final Trip trip = gson.fromJson(tripString, Trip.class);
 
 /*        try {
 
@@ -91,7 +88,6 @@ public class TripResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteTrip(@Context HttpServletRequest request, Trip trip) {
-        //final Trip trip = gson.fromJson(tripString, Trip.class);
         try {
             FirestoreClient.getFirestore().collection("users")
                     .document(request.getAttribute("userID").toString())
@@ -99,7 +95,7 @@ public class TripResource {
                     .document(trip.getId())
                     .delete().get();
 
-            return Response.ok(trip.toString()).build();
+            return Response.ok(trip).build();
         } catch (InterruptedException | ExecutionException e) {
             log.severe("Error at setTrip: " + e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -107,51 +103,28 @@ public class TripResource {
     }
 
 
-    private List<Trip> getTestTrip() {
-        List<Trip> trips = new ArrayList<>();
 
-        Location location1 = new Location(21.2, 21.3, false, "");
-        Location location2 = new Location(122, 214.3, true, "Bologna");
-        Location location3 = new Location(232, 221.3, false, "");
 
-        ArrayList<Location> path = new ArrayList<>();
-        path.add(location1);
-        path.add(location2);
-        path.add(location3);
-
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String dateString = formatter.format(new Date());
-
-        trips.add(new Trip(dateString, "walk", path));
-        return trips;
-    }
-
-    @POST
-    @Path("/test")
-    @Consumes({"application/json"})
-    @Produces({"application/json"})
-   // @Produces(MediaType.APPLICATION_JSON)
-    public Response testPost(@Context HttpServletRequest request, Location location) {
-            return Response.ok("La location e importante: " + location.isImportant()).build();
-    }
-
-    @PUT
+    @GET
     @Path("/test")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response testPUT(String locationString) {
-        try {
-           // log.info("La stringa e " + locationString);
-            log.info("Sem pride");
-            Location location = gson.fromJson(locationString, Location.class);
-            log.info("Sem tudi 2222");
-
-            return Response.ok(location.toString()).build();
-        } catch (Exception e) {
-            log.severe("Error at getTrip: " + e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
+    // @Produces(MediaType.APPLICATION_JSON)
+    public Response testPost(@Context HttpServletRequest request) {
+        List<Location> lista = new ArrayList<>();
+        Location location = new Location(12, 33, true, "Milano");
+        lista.add(location);
+        return Response.ok(lista).build();
     }
+
+
+    @POST
+    @Path("/test")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response setTripTest(@Context HttpServletRequest request, Trip trip) {
+        return Response.ok(trip).build();
+    }
+
 
 }

@@ -65,7 +65,6 @@
             icon="star-fill"
             variant="warning"
             scale="1.3"
-            class="shadow-none"
           />
           <b-icon v-else icon="star" scale="1.3" />
         </b-form-checkbox>
@@ -142,12 +141,13 @@ export default {
     //const response = await fetch(`${process.env.VUE_APP_REST_URL}/trip/test`);
     const response = await fetch(`${process.env.VUE_APP_REST_URL}/trip`);
     const info = await response.json();
-    this.date = info.date;
-    this.vehicle = info.vehicle;
-    this.items = info.items;
+    this.date = info.at(0).date;
+    this.vehicle = info.at(0).vehicle;
+    this.items = info.at(0).path;
   },
 };
 </script>
 
 <style scoped>
+
 </style>

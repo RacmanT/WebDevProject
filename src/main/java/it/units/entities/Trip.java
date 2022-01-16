@@ -1,5 +1,7 @@
 package it.units.entities;
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -7,7 +9,7 @@ import java.util.UUID;
 public class Trip implements Serializable {
 
 
-    private String id;
+    private final String id = UUID.randomUUID().toString().replace("-", "");
     private String date;
     private String vehicle;
     private List<Location> path;
@@ -18,7 +20,7 @@ public class Trip implements Serializable {
         this.path = path;
     }
 
-    public void setId(String id) {
+/*    public void setId(String id) {
         this.id = id;
     }
 
@@ -27,23 +29,17 @@ public class Trip implements Serializable {
         this.date = date;
         this.vehicle = vehicle;
         this.path = path;
-    }
-
-
+    }*/
 
 
     public Trip() {
     }
 
-    @Override
+  /*  @Override
     public String toString() {
-        return "{" +
-                "id='" + id + '\'' +
-                ", date='" + date + '\'' +
-                ", vehicle='" + vehicle + '\'' +
-                ", path=" + path +
-                '}';
-    }
+        //return new Gson().toJson(this);
+        return new Gson().toJson(this, Trip.class);
+    }*/
 
     public String getId() {
         return id;

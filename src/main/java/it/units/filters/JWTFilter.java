@@ -1,19 +1,11 @@
 package it.units.filters;
 
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseToken;
-import it.units.api.TripResource;
-
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //@WebFilter(asyncSupported = true, urlPatterns = {"/api/*"})
@@ -22,6 +14,7 @@ public class JWTFilter implements Filter {
 
     private static final Logger log = Logger.getLogger(JWTFilter.class.toString());
     private final String excludedPath = "/api/register";
+    private final String excludedPathOnlyInDEBUG = "/api/trip";
 
     public JWTFilter() {
     }
@@ -35,17 +28,17 @@ public class JWTFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String path = ((HttpServletRequest) request).getRequestURI();
-                 /*
+
                    try {
                    request.setAttribute("userID", "testUserID");
             chain.doFilter(request, response);
         } catch (ServletException e) {
             e.printStackTrace();
             log.severe("ERROR: " + e.getMessage());
-        }*/
-
+        }
+/*
         try {
-            if (excludedPath.equals(path)) {
+            if (excludedPathOnlyInDEBUG.equals(path)) {
                 chain.doFilter(request, response);
                 return;
             }
@@ -71,7 +64,7 @@ public class JWTFilter implements Filter {
         } catch (FirebaseAuthException | IOException | ServletException e) {
             log.severe("Error at decoding JWT token: " + e.getMessage());
             response.sendError(400, "Something is wrong with the JWT token!");
-        }
+        }*/
     }
 
     @Override

@@ -14,9 +14,9 @@
       :date-info-fn="dateClass"
     />
 
-    <p>{{date}}</p>
+    <p>{{ date }}</p>
 
-    <Map :geojson="addLine(geojson)" />
+    <Map :geojson="geojson" />
     <b-table hover :items="items"></b-table>
 
     <!-- <b-list-group>
@@ -47,7 +47,15 @@ export default {
   },
   async created() {
     const response = await fetch(`${process.env.VUE_APP_REST_URL}/trip`);
-    this.geojson = await response.json();
+    const trips = await response.json();
+    console.log(trips);
+    this.geojson = this.toGeoson(trips.at(1));
+
+    /*   const stringa =
+      '{"id":"443c436e15a740d38839fd6d2841dec2", "date":"2009-01-11", "vehicle":"walk", "path":[{"longitude":11.5356, "latitude":12.5356, "name":"Roma", "important":false}, {"longitude":17.5356, "latitude":22.5356, "name":"Trieste", "important":true}]}';
+    const trip = JSON.parse(stringa);
+    this.geojson = this.toGeoson(trip);
+    console.log(JSON.stringify(this.geojson)); */
   },
 
   methods: {
@@ -64,10 +72,43 @@ export default {
     },
 
     dateClass(ymd, date) {
-        const day = date.getDate()
-        return day >= 10 && day <= 20 ? '' : 'table-active'
-      }
+      const day = date.getDate();
+      return day >= 10 && day <= 20 ? "" : "table-active";
+    },
 
+    toGeoson(trip) {
+      const coordinates = [];
+      const geojson = {
+        type: "FeatureCollection",
+        features: [],
+      };
+
+      if (!isEmpty(trip)) {
+        trip.path.forEach((location) => {
+          coordinates.push([location.longitude, location.latitude]);
+          if (location.important) {
+            geojson.features.push({
+              type: "Feature",
+              properties: {},
+              geometry: {
+                type: "Point",
+                coordinates: [location.longitude, location.latitude],
+              },
+            });
+          }
+        });
+
+        geojson.features.push({
+          type: "Feature",
+          properties: {},
+          geometry: {
+            type: "LineString",
+            coordinates: coordinates,
+          },
+        });
+      }
+      return geojson;
+    },
   },
 };
 </script>

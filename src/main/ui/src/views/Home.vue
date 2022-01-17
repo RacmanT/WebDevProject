@@ -1,11 +1,6 @@
 <template>
-  <b-container
-    fluid
-    align-v="center"
-    align-h="center"
-    class="mt-5"
-    style="height: 500px; width: 500px"
-  >
+  <b-container fluid align-v="center" align-h="center" class="mt-5">
+    <h1 class="my-4">Welcome</h1>
     <b-form-datepicker
       v-model="date"
       class="mb-2"
@@ -14,10 +9,14 @@
       :date-info-fn="dateClass"
     />
 
-    <p>{{ date }}</p>
+    <b-list-group v-for="trip in filteredDates" v-bind:key="trip.id">
+      <b-list-group-item button @click.prevent="$router.push({ name: 'View trip', params: {trip} })">{{ trip.date }}</b-list-group-item>
+    </b-list-group>
 
-    <Map :geojson="geojson" />
-    <b-table hover :items="items"></b-table>
+    <b-button variant="outline-success" class="mt-4" @click="$router.push({name:'Add trip'})">Add trip </b-button>
+
+    <!-- <Map :geojson="geojson" />
+    <b-table hover :items="items"></b-table> -->
 
     <!-- <b-list-group>
       <b-list-group-item v-b-toggle.collapse-3
@@ -31,83 +30,46 @@
 </template>
 
 <script>
-import Map from "@/components/Map.vue";
-import { isEmpty } from "lodash";
+// import Map from "@/components/Map.vue";
 
 export default {
-  components: {
+  /* components: {
     Map,
-  },
+  }, */
   data() {
     return {
       date: null,
-      geojson: null,
-      items: [{ age: 40, first_name: "Dickerson", last_name: "Macdonald" }],
+      trips: [],
     };
   },
   async created() {
     const response = await fetch(`${process.env.VUE_APP_REST_URL}/trip`);
-    const trips = await response.json();
-    console.log(trips);
-    this.geojson = this.toGeoson(trips.at(1));
-
-    /*   const stringa =
-      '{"id":"443c436e15a740d38839fd6d2841dec2", "date":"2009-01-11", "vehicle":"walk", "path":[{"longitude":11.5356, "latitude":12.5356, "name":"Roma", "important":false}, {"longitude":17.5356, "latitude":22.5356, "name":"Trieste", "important":true}]}';
-    const trip = JSON.parse(stringa);
-    this.geojson = this.toGeoson(trip);
-    console.log(JSON.stringify(this.geojson)); */
+    this.trips = await response.json();
+    this.date = this.trips.at(0).date;
+    /* console.log(JSON.stringify(this.trips));
+    console.log(
+      new Date(this.date).getTime() === new Date("2009-01-11").getTime()
+    ); */
   },
 
   methods: {
-    addLine(geojson) {
-      if (!isEmpty(this.geojson)) {
-        let temp = [];
-        geojson.features
-          .filter((feature) => feature.geometry.type === "Point")
-          .forEach((feature) => temp.push(feature.geometry.coordinates));
-
-        geojson.features.at(-1).geometry.coordinates = temp;
-      }
-      return geojson;
-    },
-
     dateClass(ymd, date) {
-      const day = date.getDate();
-      return day >= 10 && day <= 20 ? "" : "table-active";
-    },
-
-    toGeoson(trip) {
-      const coordinates = [];
-      const geojson = {
-        type: "FeatureCollection",
-        features: [],
-      };
-
-      if (!isEmpty(trip)) {
-        trip.path.forEach((location) => {
-          coordinates.push([location.longitude, location.latitude]);
-          if (location.important) {
-            geojson.features.push({
-              type: "Feature",
-              properties: {},
-              geometry: {
-                type: "Point",
-                coordinates: [location.longitude, location.latitude],
-              },
-            });
+      return this.trips
+        .map((trip) => new Date(trip.date))
+        .some((targetDate) => {
+          if (targetDate.toDateString() === date.toDateString()) {
+            console.log(targetDate.toDateString());
           }
-        });
+          return targetDate.toDateString() === date.toDateString();
+        })
+        ? ""
+        : "table-active";
+    },
+  },
 
-        geojson.features.push({
-          type: "Feature",
-          properties: {},
-          geometry: {
-            type: "LineString",
-            coordinates: coordinates,
-          },
-        });
-      }
-      return geojson;
+  computed: {
+    filteredDates() {
+      return this.trips.filter((trip) => trip.date === this.date);
     },
   },
 };

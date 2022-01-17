@@ -2,6 +2,8 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Auth from "../views/Auth.vue";
+import AddTrip from "@/views/AddTrip.vue";
+
 
 Vue.use(VueRouter);
 
@@ -15,8 +17,15 @@ const routes = [
   {
     path: "/add",
     name: "Add trip",
-    component: () => import("../views/AddTrip.vue"),
+    component: AddTrip,
     meta: { requiresAuth: true },
+  },
+  {
+    path: "/view",
+    name: "View trip",
+    component: () => import("../views/ViewTrip.vue"),
+    meta: { requiresAuth: true },
+    props: true
   },
   {
     path: "/signup",
@@ -36,6 +45,11 @@ const routes = [
     component: Auth,
     meta: { requiresAuth: false },
   },
+  {
+    path: "*",
+    name: "NotFound",
+    component: () => import("../views/NotFound.vue"),
+  },
 ];
 
 const router = new VueRouter({
@@ -45,9 +59,12 @@ const router = new VueRouter({
 const user = { isAuthenticated: true };
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && !user.isAuthenticated) next({ name: "Authentication" });
-  else if (!to.meta.requiresAuth && user.isAuthenticated) next({ name: "Home" });
-  else next()
-})
+  if (to.name === "NotFound") next();
+  else if (to.meta.requiresAuth && !user.isAuthenticated)
+    next({ name: "Authentication" });
+  else if (!to.meta.requiresAuth && user.isAuthenticated)
+    next({ name: "Home" });
+  else next();
+});
 
 export default router;

@@ -6,9 +6,9 @@
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
-        <b-navbar-nav>
+        <!-- <b-navbar-nav>
           <b-nav-item :to="{ name : 'Add trip' }">Add trip</b-nav-item>
-        </b-navbar-nav>
+        </b-navbar-nav> -->
 
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
@@ -16,7 +16,7 @@
             <b-button
               v-show="signed"
               right
-              variant="outline-primary"
+              variant="outline-secondary"
               @click.prevent="signOut"
               >Sign Out</b-button
             >

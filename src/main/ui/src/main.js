@@ -4,7 +4,7 @@ import Vue from "vue";
 import "./plugins/bootstrap-vue";
 import App from "./App.vue";
 import router from "./router";
-import "bootswatch/dist/simplex/bootstrap.min.css";
+import "bootswatch/dist/litera/bootstrap.min.css";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { BootstrapVueIcons } from 'bootstrap-vue'

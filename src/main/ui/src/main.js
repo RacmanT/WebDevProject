@@ -6,6 +6,8 @@ import App from "./App.vue";
 import router from "./router";
 import "bootswatch/dist/litera/bootstrap.min.css";
 import "leaflet/dist/leaflet.css";
+import '@fortawesome/fontawesome-free/css/all.css'
+import '@fortawesome/fontawesome-free/js/all.js'
 import L from "leaflet";
 import { BootstrapVueIcons } from 'bootstrap-vue'
 import 'bootstrap-vue/dist/bootstrap-vue-icons.min.css'

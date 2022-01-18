@@ -4,9 +4,16 @@
     align-v="center"
     align-h="center"
     class="mt-5"
-    style="height: 500px; width: 100%"
+    style="height: 500px; width: 80%"
   >
     <h1>Trip info</h1>
+
+    <div class="float-right mb-3">
+      <b-button class="mx-2" variant="danger" @click="deleteTrip()"
+        ><i class="far fa-trash-alt"></i>
+      </b-button>
+      <b-button variant="info" @click="editTrip()"><i class="fas fa-edit"></i> </b-button>
+    </div>
 
     <Map :geojson="geojson" />
 
@@ -16,12 +23,7 @@
       <b-button variant="primary" @click="$router.go(-1)">Back </b-button>
     </div>
 
-    <div class="float-right mt-3">
-      <b-button class="mx-2" variant="danger" @click="deleteTrip()"
-        >Delete
-      </b-button>
-      <b-button variant="info" @click="editTrip()">Edit </b-button>
-    </div>
+
   </b-container>
 </template>
 
@@ -39,6 +41,9 @@ export default {
       geojson: null,
       trip: null,
     };
+  },
+  props:{
+
   },
   methods: {
     toGeoson(trip) {

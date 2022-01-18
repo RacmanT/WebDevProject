@@ -3,11 +3,15 @@
     <h1>Add a new trip</h1>
 
     <b-form-radio-group v-model="vehicle">
-      <b-form-radio value="walk" inline>Walk</b-form-radio>
+      <b-form-radio value="walk" inline>
+        <i class="fas fa-walking fa-lg"></i>
+      </b-form-radio>
       <b-form-radio value="bycicle" inline
-        ><b-icon icon="bicycle" variant="outline-danger" scale="1.3"></b-icon
+        ><i class="fas fa-bicycle fa-lg"></i
       ></b-form-radio>
-      <b-form-radio value="car" inline>Car</b-form-radio>
+      <b-form-radio value="car" inline>
+        <i class="fas fa-car-side fa-lg"></i>
+      </b-form-radio>
     </b-form-radio-group>
 
     <b-form-datepicker
@@ -98,8 +102,12 @@
     </div>
 
     <div class="float-right mt-3">
-      <b-button class="mx-2" variant="danger" @click="back()">Cancel </b-button>
-      <b-button variant="success" @click="save()">Save </b-button>
+      <b-button class="mx-2" variant="danger" @click="back()"
+        ><i class="fas fa-times" ></i
+      ></b-button>
+      <b-button variant="success" @click="save()"
+        ><i class="far fa-save" i
+      /></b-button>
     </div>
   </b-container>
 </template>

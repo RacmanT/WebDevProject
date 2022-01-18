@@ -1,5 +1,8 @@
 <template>
-  <b-container fluid align-v="center" align-h="center" class="mt-5">
+
+
+
+  <b-container >
     <h1 class="my-4">Welcome</h1>
     <b-form-datepicker
       v-model="date"
@@ -7,15 +10,18 @@
       menu-class="w-100"
       calendar-width="100%"
       :date-info-fn="dateClass"
-    />
 
-    <b-list-group v-for="trip in filteredDates" v-bind:key="trip.id">
+    b-form-datepicker/>
+
+    
+
+     <b-list-group v-for="trip in filteredDates" v-bind:key="trip.id">
       <b-list-group-item
         button
         @click.prevent="goToRouter(trip)"
         >{{ trip.date }}</b-list-group-item
       >
-    </b-list-group>
+    </b-list-group> 
 
     <b-button
       variant="outline-success"
@@ -36,6 +42,7 @@
       </b-collapse>
     </b-list-group> -->
   </b-container>
+
 </template>
 
 <script>

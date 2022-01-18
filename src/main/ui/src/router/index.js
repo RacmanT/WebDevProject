@@ -13,6 +13,7 @@ const routes = [
     name: "Home",
     component: Home,
     meta: { requiresAuth: true },
+    props: true
   },
   {
     path: "/add",

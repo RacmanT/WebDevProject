@@ -14,9 +14,10 @@
         <b-navbar-nav class="ml-auto">
           <b-nav-form>
             <b-button
-              v-show="signed"
+              v-show="isSigned"
               right
               variant="outline-secondary"
+       
               @click.prevent="signOut"
               >Sign Out</b-button
             >
@@ -53,8 +54,8 @@ export default {
   },
 
   computed: {
-    signed() {
-      return true;
+    isSigned() {
+      return this.$route.name !== 'Authentication';
     },
   },
 };

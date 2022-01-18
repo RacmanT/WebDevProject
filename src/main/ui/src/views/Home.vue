@@ -10,10 +10,19 @@
     />
 
     <b-list-group v-for="trip in filteredDates" v-bind:key="trip.id">
-      <b-list-group-item button @click.prevent="$router.push({ name: 'View trip', params: {trip} })">{{ trip.date }}</b-list-group-item>
+      <b-list-group-item
+        button
+        @click.prevent="goToRouter(trip)"
+        >{{ trip.date }}</b-list-group-item
+      >
     </b-list-group>
 
-    <b-button variant="outline-success" class="mt-4" @click="$router.push({name:'Add trip'})">Add trip </b-button>
+    <b-button
+      variant="outline-success"
+      class="mt-4"
+      @click="$router.push({ name: 'Add trip' })"
+      >Add trip
+    </b-button>
 
     <!-- <Map :geojson="geojson" />
     <b-table hover :items="items"></b-table> -->
@@ -31,6 +40,7 @@
 
 <script>
 // import Map from "@/components/Map.vue";
+import { isEmpty } from "lodash";
 
 export default {
   /* components: {
@@ -45,7 +55,7 @@ export default {
   async created() {
     const response = await fetch(`${process.env.VUE_APP_REST_URL}/trip`);
     this.trips = await response.json();
-    this.date = this.trips.at(0).date;
+    this.date = isEmpty(this.trips) ? null :  this.trips.at(-1).date; //TODO if trip is not null?
     /* console.log(JSON.stringify(this.trips));
     console.log(
       new Date(this.date).getTime() === new Date("2009-01-11").getTime()
@@ -65,6 +75,11 @@ export default {
         ? ""
         : "table-active";
     },
+
+    goToRouter(trip){
+     
+      this.$router.push({ name: 'View trip', params: trip })
+    }
   },
 
   computed: {

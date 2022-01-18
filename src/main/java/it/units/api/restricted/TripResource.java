@@ -101,30 +101,7 @@ public class TripResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
-
-
-
-
-    @GET
-    @Path("/test")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    // @Produces(MediaType.APPLICATION_JSON)
-    public Response testPost(@Context HttpServletRequest request) {
-        List<Location> lista = new ArrayList<>();
-        Location location = new Location(12, 33, true, "Milano");
-        lista.add(location);
-        return Response.ok(lista).build();
-    }
-
-
-    @POST
-    @Path("/test")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response setTripTest(@Context HttpServletRequest request, Trip trip) {
-        return Response.ok(trip).build();
-    }
+    
 
 
 }

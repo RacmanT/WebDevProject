@@ -19,11 +19,11 @@ public class User implements Serializable{
         this.password = password;
     }
 
-/*    @Override
+    @Override
     public String toString() {
         //return new Gson().toJson(this);
         return new Gson().toJson(this, User.class);
-    }*/
+    }
 
     public String getUsername() {
         return username;

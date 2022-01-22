@@ -1,6 +1,10 @@
 package it.units.filters;
 
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
+
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
@@ -29,16 +33,16 @@ public class JWTFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String path = ((HttpServletRequest) request).getRequestURI();
 
-                   try {
-                   request.setAttribute("userID", "testUserID");
+   /*     try {
+            request.setAttribute("userID", "testUserID");
             chain.doFilter(request, response);
         } catch (ServletException e) {
             e.printStackTrace();
             log.severe("ERROR: " + e.getMessage());
-        }
-/*
+        }*/
+
         try {
-            if (excludedPathOnlyInDEBUG.equals(path)) {
+            if (excludedPath.equals(path)) {
                 chain.doFilter(request, response);
                 return;
             }
@@ -54,7 +58,7 @@ public class JWTFilter implements Filter {
                 //String userID = FirebaseAuth.getInstance().getUser(decodedToken.getUid()).getUid();
                 String userID = decodedToken.getUid();
 
-                userID = "testUserID";
+                //userID = "testUserID"; // TODO remove
                 request.setAttribute("userID", userID);
                 chain.doFilter(request, response);
             } else {
@@ -64,7 +68,7 @@ public class JWTFilter implements Filter {
         } catch (FirebaseAuthException | IOException | ServletException e) {
             log.severe("Error at decoding JWT token: " + e.getMessage());
             response.sendError(400, "Something is wrong with the JWT token!");
-        }*/
+        }
     }
 
     @Override

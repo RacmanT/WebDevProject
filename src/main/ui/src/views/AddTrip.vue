@@ -102,13 +102,19 @@
     </div>
 
     <div class="float-right mt-3">
-      <b-button class="mx-2" variant="danger" @click="back()"
-        ><i class="fas fa-times" ></i
+      <b-button class="mx-2" variant="danger" @click="$router.go(-1)"
+        ><i class="fas fa-times"></i
       ></b-button>
       <b-button variant="success" @click="save()"
         ><i class="far fa-save" i
       /></b-button>
     </div>
+
+<span style="font-size: 3em; color: Yellow;">
+  <i class="fas fa-star"></i>
+</span>
+
+
   </b-container>
 </template>
 
@@ -116,17 +122,20 @@
 
 <script>
 import { isEqual } from "lodash";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   data() {
     return {
       vehicle: "walk",
-      date: new Date().toISOString().split("T")[0],
+      date: "",
       items: [
-        { longitude: 12, latitude: 21, name: "Trieste", important: true },
-        { longitude: 12, latitude: 21, name: "Bologna", important: false },
-        { longitude: 12, latitude: 21, name: "Milano", important: true },
-        { longitude: 12, latitude: 21, name: "New York", important: true },
+        {
+          longitude: 0,
+          latitude: 0,
+          name: "",
+          important: false,
+        },
       ],
       fields: [
         { key: "longitude", thStyle: { width: "20%" } },
@@ -138,6 +147,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["updateTrip", "deleteTrip", "addTrip"]),
     addRow() {
       if (!this.lastRowIsEmpty) {
         this.items.push({
@@ -160,20 +170,9 @@ export default {
         alert("Date cannot be empty!");
         return;
       }
-      var trip = { vehicle: this.vehicle, date: this.date, path: this.items };
-      (trip = await fetch(`${process.env.VUE_APP_REST_URL}/trip`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(trip),
-      }).catch((err) => console.log(err))),
-        console.log(trip);
-    },
-
-    back() {
-      this.$router.go(-1);
+      const trip = {id:this.selectedTrip.id, vehicle: this.vehicle, date: this.date, path: this.items };
+      await this.updateTrip(trip);
+      alert("trip updated")
     },
 
     nameRequired(item) {
@@ -181,7 +180,9 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(["selectedTrip"]),
     lastRowIsEmpty() {
+      //if (this.items === undefined) return false;
       if (this.items.length === 0) return false;
       else
         return (
@@ -190,13 +191,10 @@ export default {
     },
   },
 
-  async created() {
-    //const response = await fetch(`${process.env.VUE_APP_REST_URL}/trip/test`);
-    /*  const response = await fetch(`${process.env.VUE_APP_REST_URL}/trip`);
-    const info = await response.json();
-    this.date = info.at(0).date;
-    this.vehicle = info.at(0).vehicle;
-    this.items = info.at(0).path; */
+  created() {
+    this.date = this.selectedTrip.date;
+    this.vehicle = this.selectedTrip.vehicle;
+    this.items = this.selectedTrip.path;
   },
 };
 </script>

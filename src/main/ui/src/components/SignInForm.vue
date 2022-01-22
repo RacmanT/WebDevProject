@@ -1,7 +1,7 @@
 <template>
-
-
   <b-card-body class="m-3">
+    <h1 class="mb-4">Welcome!</h1>
+
     <b-form @submit.prevent="signIn">
       <b-form-group label="Name:">
         <b-form-input
@@ -34,19 +34,22 @@
       </b-form-group>
 
       <b-form-group>
-        <b-button type="submit" class="mt-3" variant="primary"
-          >Register</b-button
+        <b-button
+          type="submit"
+          class="mt-3"
+          variant="primary"
+          :disabled="loading"
+          ><b-spinner small v-if="loading"></b-spinner>
+          <span>Register</span></b-button
         >
       </b-form-group>
     </b-form>
   </b-card-body>
-
-
 </template>
 
 
 <script>
-import axios from "axios";
+import firebase from "firebase/compat/app";
 
 export default {
   name: "SignInForm",
@@ -57,15 +60,34 @@ export default {
         email: "",
         password: "",
       },
+      loading: false,
     };
   },
   methods: {
-    signIn() {
-      this.$router.replace({ path: "/" });
-      alert(JSON.stringify(this.form));
-      axios
-        .get(`${process.env.VUE_APP_REST_URL}/trip`)
-        .then((response) => console.log(response.data));
+    async signIn() {
+      this.loading = !this.loading;
+      const user = {
+        username: this.form.name,
+        email: this.form.email,
+        password: this.form.password,
+      };
+
+      await fetch(`${process.env.VUE_APP_REST_URL}/register`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      }).catch((err) => console.log(err.message));
+
+      await firebase
+        .auth()
+        .signInWithEmailAndPassword(this.form.email, this.form.password)
+        .catch((err) => console.log(err.message));
+
+      this.$router.push({ name: "Home" });
+      this.loading = !this.loading;
     },
   },
 };

@@ -16,6 +16,7 @@
 
 <script>
 import { LMap, LTileLayer, LControlZoom, LGeoJson } from "vue2-leaflet";
+import { mapGetters } from "vuex";
 
 export default {
   name: "Map",
@@ -33,13 +34,13 @@ export default {
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution:
         '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      zoom: 4,
-      center: [47.41322, -1.219482],
+      zoom: 3,
+      center: [],
       bounds: null,
     };
   },
 
- 
+   computed: mapGetters(["selectedTrip"]),
 
   methods: {
     zoomUpdated(zoom) {
@@ -52,5 +53,11 @@ export default {
       this.bounds = bounds;
     },
   },
+
+  created(){
+    const longitude = this.selectedTrip.path[0].longitude
+    const latitude = this.selectedTrip.path[0].longitude
+    this.center = [longitude, latitude]
+  }
 };
 </script>

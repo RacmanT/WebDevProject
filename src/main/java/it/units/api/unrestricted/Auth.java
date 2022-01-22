@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
+import com.google.gson.Gson;
 import it.units.entities.User;
 
 import javax.ws.rs.*;
@@ -30,7 +31,7 @@ public class Auth {
     @Produces(MediaType.APPLICATION_JSON)
     public Response addUser(final User user) {
 
-        //final User user = gson.fromJson(userString, User.class);
+        //final User user = new Gson().fromJson(userString, User.class);
         try {
             // https://firebase.google.com/docs/auth/admin/manage-users#create_a_user
             // Adding user to Firebase Authentication

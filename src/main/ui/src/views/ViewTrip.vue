@@ -9,27 +9,28 @@
     <h1>Trip info</h1>
 
     <div class="float-right mb-3">
-      <b-button class="mx-2" variant="danger" @click="deleteTrip()"
+      <b-button class="mx-2" variant="danger" @click="trashTrip()"
         ><i class="far fa-trash-alt"></i>
       </b-button>
-      <b-button variant="info" @click="editTrip()"><i class="fas fa-edit"></i> </b-button>
+      <b-button variant="info" @click="editTrip()"
+        ><i class="fas fa-edit"></i>
+      </b-button>
+    </div>
+
+    <div class="float-left">
+      <b-button variant="primary" @click="$router.go(-1)">Back </b-button>
     </div>
 
     <Map :geojson="geojson" />
 
     <b-table :items="tripTable"></b-table>
-
-    <div class="float-left mt-3" style="height: 50%; width: 50%">
-      <b-button variant="primary" @click="$router.go(-1)">Back </b-button>
-    </div>
-
-
   </b-container>
 </template>
 
 <script>
 import Map from "@/components/Map.vue";
-import { isEmpty, omit } from "lodash";
+import { isEmpty } from "lodash";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
   components: {
@@ -39,13 +40,23 @@ export default {
   data() {
     return {
       geojson: null,
-      trip: null,
     };
   },
-  props:{
-
-  },
   methods: {
+    ...mapActions(["deleteTrip"]),
+    ...mapMutations(["setTargetTrip"]),
+     async trashTrip() {
+      if (confirm("Are you sure you want to delete this trip?")) {
+       await this.deleteTrip(this.selectedTrip).then(this.$router.push({ name: "Home" }));
+      /* {
+        this.setTargetTrip({ date: this.selectedTrip.date });
+        this.$router.push({ name: "Home" });
+      } */
+      }
+    },
+    editTrip() {
+      this.$router.push({ name: "Add trip" });
+    },
     toGeoson(trip) {
       const coordinates = [];
       const geojson = {
@@ -81,32 +92,13 @@ export default {
     },
   },
 
-  computed: {
-    tripTable() {
-      /* let tripTable = null;
-      if (this.trip) {
-        tripTable = this.trip.path
-          .filter((location) => location.important)
-          .map((location) => omit(location, ["important"]));
-      }
-      return tripTable; */
+  computed: mapGetters(["selectedTrip", "tripTable"]),
 
-      return !isEmpty(this.trip)
-        ? this.trip.path
-            .filter((location) => location.important)
-            .map((location) => omit(location, ["important"]))
-        : null;
-    },
-  },
-
-  async beforeCreate() {
-    const response = await fetch(`${process.env.VUE_APP_REST_URL}/trip`);
-    const trips = await response.json();
-    //this.trip = trips.at(0);
-    console.log(trips.at(-1));
-    console.log(this.trip);
-    this.trip = this.$route.params;
-    this.geojson = this.toGeoson(this.trip); // TODO change to trip.path
+  created() {
+    if (this.selectedTrip == null) {
+      this.$router.push({ name: "Home" });
+    }
+    this.geojson = this.toGeoson(this.selectedTrip); // TODO change to trip.path
   },
 };
 </script>

@@ -1,5 +1,7 @@
 <template>
   <b-card-body class="m-3">
+    <h1 class="mb-4">Hi, there!</h1>
+
     <b-form @submit.prevent="signUp">
       <b-form-group label="Email address:">
         <b-form-input
@@ -26,7 +28,12 @@
       </b-form-group>
 
       <b-form-group>
-        <b-button type="submit"  class="mt-2"  variant="primary" :disabled="loading">
+        <b-button
+          type="submit"
+          class="mt-2"
+          variant="primary"
+          :disabled="loading"
+        >
           <b-spinner small v-if="loading"></b-spinner>
           <span>Log in</span>
         </b-button>
@@ -36,7 +43,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import firebase from "firebase/compat/app";
 
 export default {
   name: "SignUpForm",
@@ -45,22 +52,39 @@ export default {
       form: {
         email: "",
         password: "",
-        checked: false,
+        remember: false,
       },
       loading: false,
     };
   },
   methods: {
-    signUp() {
-      this.loading = true;
-      //alert(JSON.stringify(this.form));
-      axios.get(`${process.env.VUE_APP_REST_URL}/trip`).then((response) => {
-        console.log(response.data);
-        setTimeout(() => {
-          this.loading = false;
-        }, 3000);
-      });
-      this.$router.replace({ path: "/" });
+    async signUp() {
+      await firebase
+        .auth()
+        .setPersistence(
+          this.form.remember
+            ? firebase.auth.Auth.Persistence.LOCAL
+            : firebase.auth.Auth.Persistence.SESSION
+        );
+
+      this.loading = !this.loading;
+
+      await firebase
+        .auth()
+        .signInWithEmailAndPassword(this.form.email, this.form.password)
+        .then(() => this.$router.replace({ name: "Home" }))
+        .catch((err) => console.log(err.message))
+        .finally((this.loading = !this.loading));
+
+      /* await firebase
+        .auth()
+        .signInWithEmailAndPassword(this.form.email, this.form.password)
+        //.then(window.location.reload())
+        .then(this.$router.replace({ name: "Home" }))
+        .catch((err) => {
+          alert(err.message);
+        })
+        .finally((this.loading = !this.loading)); */
     },
   },
 };

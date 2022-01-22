@@ -1,6 +1,6 @@
 <template>
   <b-card-body class="m-3">
-    <h1 class="mb-4">Welcome!</h1>
+    <h1 class="mb-4 font-weight-light">Welcome!</h1>
 
     <b-form @submit.prevent="signIn">
       <b-form-group label="Name:">
@@ -9,7 +9,11 @@
           type="text"
           placeholder="Enter name"
           required
+          :state="validation"
         ></b-form-input>
+        <b-form-invalid-feedback :state="validation">
+          Name must be composed only of letters.
+        </b-form-invalid-feedback>
       </b-form-group>
 
       <b-form-group label="Email address:">
@@ -18,19 +22,22 @@
           type="email"
           placeholder="Enter email"
           required
+          :state="validation"
         ></b-form-input>
       </b-form-group>
 
-      <b-form-group
-        label="Password:"
-        description="Password should be at least 6 characters long"
-      >
+      <b-form-group label="Password:">
         <b-form-input
           type="password"
           v-model="form.password"
           placeholder="Enter password"
           required
+          :state="validation"
         ></b-form-input>
+
+        <b-form-invalid-feedback :state="validation">
+          Password should be at least 6 characters long
+        </b-form-invalid-feedback>
       </b-form-group>
 
       <b-form-group>
@@ -40,7 +47,7 @@
           variant="primary"
           :disabled="loading"
           ><b-spinner small v-if="loading"></b-spinner>
-          <span>Register</span></b-button
+          <span v-else>Register</span></b-button
         >
       </b-form-group>
     </b-form>
@@ -61,10 +68,23 @@ export default {
         password: "",
       },
       loading: false,
+      validation: null,
     };
   },
   methods: {
     async signIn() {
+      const mailPattern = /\S+@\S+\.\S+/;
+      const namePattern = /^[A-Za-z]+$/;
+      if (
+        !this.form.name.match(namePattern) ||
+        this.form.name.length < 3 ||
+        !this.form.email.match(mailPattern) ||
+        this.form.password.length < 6
+      ) {
+        this.validation = false;
+        return;
+      }
+
       this.loading = !this.loading;
       const user = {
         username: this.form.name,
@@ -79,15 +99,21 @@ export default {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(user),
-      }).catch((err) => console.log(err.message));
+      }).catch((err) => {
+        console.log(err.message);
+        this.validation = false;
+      });
 
       await firebase
         .auth()
         .signInWithEmailAndPassword(this.form.email, this.form.password)
-        .catch((err) => console.log(err.message));
+        .catch((err) => {
+          console.log(err.message);
+          this.validation = false;
+        });
 
-      this.$router.push({ name: "Home" });
       this.loading = !this.loading;
+      this.$router.replace({ name: "Home" });
     },
   },
 };

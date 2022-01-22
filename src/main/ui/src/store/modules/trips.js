@@ -1,4 +1,4 @@
-import { isEqual, omit } from "lodash";
+import { isEmpty, isEqual, omit } from "lodash";
 import firebase from "firebase/compat/app";
 
 const state = {
@@ -14,7 +14,7 @@ const getters = {
   },
   selectedTrip: (state) => state.targetTrip,
   tripTable: (state) => {
-    return state.targetTrip !== null
+    return !isEmpty(state.targetTrip)
       ? state.targetTrip.path
           .filter((location) => location.important)
           .map((location) => omit(location, ["important"]))
@@ -26,7 +26,6 @@ const actions = {
   async fetchTrips({ commit }) {
     const token = await firebase.auth().currentUser.getIdToken();
     //const response = await fetch(`${process.env.VUE_APP_REST_URL}/trip`);
-    console.log(`header :   Authorization: Bearer ${token}`);
 
     const response = await fetch(`${process.env.VUE_APP_REST_URL}/trip`, {
       method: "GET",

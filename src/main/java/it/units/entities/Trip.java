@@ -10,11 +10,14 @@ public class Trip implements Serializable {
 
 
     private final String id = UUID.randomUUID().toString().replace("-", "");
+    private String name;
     private String date;
     private String vehicle;
     private List<Location> path;
 
-    public Trip(String date, String vehicle, List<Location> path) {
+
+    public Trip(String name, String date, String vehicle, List<Location> path) {
+        this.name = name;
         this.date = date;
         this.vehicle = vehicle;
         this.path = path;
@@ -43,6 +46,15 @@ public class Trip implements Serializable {
 
     public String getId() {
         return id;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDate() {

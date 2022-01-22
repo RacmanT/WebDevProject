@@ -1,6 +1,6 @@
 <template>
   <b-container class="mt-2">
-    <h1>Add a new trip</h1>
+    <h1 class="my-4">{{ title }}</h1>
 
     <b-form-radio-group v-model="vehicle">
       <b-form-radio value="walk" inline>
@@ -21,6 +21,13 @@
       menu-class="w-100"
       calendar-width="100%"
     />
+
+    <b-form-input
+      v-model="name"
+      type="text"
+      placeholder="Enter a name for the trip"
+      required
+    ></b-form-input>
 
     <b-table
       responsive
@@ -102,33 +109,30 @@
     </div>
 
     <div class="float-right mt-3">
-      <b-button class="mx-2" variant="danger" @click="$router.go(-1)"
+      <b-button class="mx-2" variant="danger" @click="goBack()"
         ><i class="fas fa-times"></i
       ></b-button>
       <b-button variant="success" @click="save()"
         ><i class="far fa-save" i
       /></b-button>
     </div>
-
-<span style="font-size: 3em; color: Yellow;">
-  <i class="fas fa-star"></i>
-</span>
-
-
   </b-container>
 </template>
 
 
 
 <script>
-import { isEqual } from "lodash";
-import { mapGetters, mapActions } from "vuex";
+import { isEqual, isEmpty, cloneDeep } from "lodash";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
   data() {
     return {
+      name: "",
       vehicle: "walk",
       date: "",
+      successful: false,
+      title: "",
       items: [
         {
           longitude: 0,
@@ -148,6 +152,15 @@ export default {
   },
   methods: {
     ...mapActions(["updateTrip", "deleteTrip", "addTrip"]),
+    ...mapMutations(["setTargetTrip"]),
+
+    goBack() {
+      if (isEmpty(this.selectedTrip.id)) {
+        this.$router.replace({ name: "Home" });
+      } else {
+        this.$router.replace({ name: "View trip" });
+      }
+    },
     addRow() {
       if (!this.lastRowIsEmpty) {
         this.items.push({
@@ -166,13 +179,36 @@ export default {
     },
 
     async save() {
-      if (this.date === null) {
+      if (this.date === "" || this.name === "") {
         alert("Date cannot be empty!");
         return;
       }
-      const trip = {id:this.selectedTrip.id, vehicle: this.vehicle, date: this.date, path: this.items };
-      await this.updateTrip(trip);
-      alert("trip updated")
+
+      const trip = {
+        id: this.selectedTrip.id,
+        name: this.name,
+        vehicle: this.vehicle,
+        date: this.date,
+        path: this.items,
+      };
+
+      let requestREST;
+      if (isEmpty(this.selectedTrip)) {
+        requestREST = this.addTrip(trip);
+      } else {
+        requestREST = this.updateTrip(trip);
+      }
+
+      await requestREST
+        .then(() => {
+          this.successful = true;
+          this.setTargetTrip(trip);
+          this.$router.replace({ name: "View trip" });
+        })
+        .catch((err) => {
+          console.log(err);
+          this.successful = false;
+        });
     },
 
     nameRequired(item) {
@@ -182,7 +218,6 @@ export default {
   computed: {
     ...mapGetters(["selectedTrip"]),
     lastRowIsEmpty() {
-      //if (this.items === undefined) return false;
       if (this.items.length === 0) return false;
       else
         return (
@@ -192,9 +227,18 @@ export default {
   },
 
   created() {
+    if (isEmpty(this.selectedTrip)) {
+      this.$router.replace({ name: "Home" });
+    }
+
+    this.title = isEmpty(this.selectedTrip.id)
+      ? "Add trip"
+      : `Edit ${this.selectedTrip.name}`;
+
+    this.name = this.selectedTrip.name;
     this.date = this.selectedTrip.date;
     this.vehicle = this.selectedTrip.vehicle;
-    this.items = this.selectedTrip.path;
+    this.items = cloneDeep(this.selectedTrip.path);
   },
 };
 </script>

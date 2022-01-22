@@ -16,21 +16,20 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/add",
+    path: "/",
     name: "Add trip",
     component: AddTrip,
     meta: { requiresAuth: true },
   },
   {
-    path: "/view",
+    path: "/",
     name: "View trip",
     component: () => import("../views/ViewTrip.vue"),
     meta: { requiresAuth: true },
   },
- 
 
   {
-    path: "/auth",
+    path: "/",
     name: "Authentication",
     component: Auth,
     meta: { requiresAuth: false },

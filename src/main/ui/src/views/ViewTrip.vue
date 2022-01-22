@@ -6,7 +6,7 @@
     class="mt-5"
     style="height: 500px; width: 80%"
   >
-    <h1>Trip info</h1>
+    <h1>{{ this.selectedTrip.name }} {{ usedVehicle }}</h1>
 
     <div class="float-right mb-3">
       <b-button class="mx-2" variant="danger" @click="trashTrip()"
@@ -18,7 +18,9 @@
     </div>
 
     <div class="float-left">
-      <b-button variant="primary" @click="$router.go(-1)">Back </b-button>
+      <b-button variant="primary" @click="$router.replace({ name: 'Home' })"
+        >Back
+      </b-button>
     </div>
 
     <Map :geojson="geojson" />
@@ -40,18 +42,18 @@ export default {
   data() {
     return {
       geojson: null,
+      usedVehicle: "",
     };
   },
   methods: {
     ...mapActions(["deleteTrip"]),
     ...mapMutations(["setTargetTrip"]),
-     async trashTrip() {
+    async trashTrip() {
       if (confirm("Are you sure you want to delete this trip?")) {
-       await this.deleteTrip(this.selectedTrip).then(this.$router.push({ name: "Home" }));
-      /* {
-        this.setTargetTrip({ date: this.selectedTrip.date });
-        this.$router.push({ name: "Home" });
-      } */
+        await this.deleteTrip(this.selectedTrip).then(() => {
+          this.setTargetTrip({ date: this.selectedTrip.date });
+          this.$router.replace({ name: "Home" });
+        });
       }
     },
     editTrip() {
@@ -95,10 +97,14 @@ export default {
   computed: mapGetters(["selectedTrip", "tripTable"]),
 
   created() {
-    if (this.selectedTrip == null) {
-      this.$router.push({ name: "Home" });
+    if (isEmpty(this.selectedTrip)) {
+      this.$router.replace({ name: "Home" });
     }
-    this.geojson = this.toGeoson(this.selectedTrip); // TODO change to trip.path
+    this.usedVehicle =
+      this.selectedTrip.vehicle === "walk"
+        ? `by ${this.selectedTrip.vehicle}`
+        : `with ${this.selectedTrip.vehicle}`;
+    this.geojson = this.toGeoson(this.selectedTrip);
   },
 };
 </script>

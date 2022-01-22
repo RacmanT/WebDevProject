@@ -31,20 +31,14 @@ export default {
 
   methods: {
     async signOut() {
-      const logout = await firebase.auth().signOut();
-      console.log(logout);
+      await firebase.auth().signOut();
       this.$router.replace({ name: "Authentication" });
-
-      /*  firebase
-        .auth()
-        .signOut()
-        .then(this.$router.push({ name: "Authentication" }).catch((err) => console.log(err.message))).catch(err => alert(err.message)); */
     },
   },
 
   computed: {
     isSigned() {
-      return this.$router.name !== "Authentication";
+      return this.$route.name !== "Authentication";
     },
   },
 };

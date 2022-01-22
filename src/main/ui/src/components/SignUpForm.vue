@@ -1,6 +1,6 @@
 <template>
   <b-card-body class="m-3">
-    <h1 class="mb-4">Hi, there!</h1>
+    <h1 class="mb-4 font-weight-light">Hi, there!</h1>
 
     <b-form @submit.prevent="signUp">
       <b-form-group label="Email address:">
@@ -9,6 +9,7 @@
           type="email"
           placeholder="Enter email"
           required
+          :state="validation"
         ></b-form-input>
       </b-form-group>
 
@@ -18,14 +19,19 @@
           v-model="form.password"
           placeholder="Enter password"
           required
+          :state="validation"
         ></b-form-input>
+
+        <b-form-invalid-feedback :state="validation">
+          Wrong credentials
+        </b-form-invalid-feedback>
       </b-form-group>
 
-      <b-form-group>
+      <!-- <b-form-group>
         <b-form-checkbox v-model="form.checked" name="check-button"
           >Remember Me</b-form-checkbox
         >
-      </b-form-group>
+      </b-form-group> -->
 
       <b-form-group>
         <b-button
@@ -35,7 +41,7 @@
           :disabled="loading"
         >
           <b-spinner small v-if="loading"></b-spinner>
-          <span>Log in</span>
+          <span v-else>Log in</span>
         </b-button>
       </b-form-group>
     </b-form>
@@ -55,36 +61,30 @@ export default {
         remember: false,
       },
       loading: false,
+      validation: null,
     };
   },
   methods: {
     async signUp() {
-      await firebase
+      this.loading = true;
+      /*  await firebase
         .auth()
         .setPersistence(
           this.form.remember
             ? firebase.auth.Auth.Persistence.LOCAL
             : firebase.auth.Auth.Persistence.SESSION
-        );
-
-      this.loading = !this.loading;
+        ); */
 
       await firebase
         .auth()
         .signInWithEmailAndPassword(this.form.email, this.form.password)
         .then(() => this.$router.replace({ name: "Home" }))
-        .catch((err) => console.log(err.message))
-        .finally((this.loading = !this.loading));
-
-      /* await firebase
-        .auth()
-        .signInWithEmailAndPassword(this.form.email, this.form.password)
-        //.then(window.location.reload())
-        .then(this.$router.replace({ name: "Home" }))
         .catch((err) => {
-          alert(err.message);
+          console.log(err.message);
+          this.validation = false;
         })
-        .finally((this.loading = !this.loading)); */
+        .finally((this.loading = false));
+
     },
   },
 };

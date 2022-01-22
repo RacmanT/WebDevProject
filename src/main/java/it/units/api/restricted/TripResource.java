@@ -1,7 +1,6 @@
 package it.units.api.restricted;
 
 import com.google.firebase.cloud.FirestoreClient;
-import it.units.entities.Location;
 import it.units.entities.Trip;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,9 +8,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;

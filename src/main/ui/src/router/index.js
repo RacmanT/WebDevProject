@@ -45,6 +45,7 @@ const router = new VueRouter({
   routes,
 });
 
+// empty catch due to vue router bug : https://stackoverflow.com/a/65326844
 router.beforeEach((to, from, next) => {
   if (to.name === "NotFound") next();
   else if (to.meta.requiresAuth && !firebase.auth().currentUser)

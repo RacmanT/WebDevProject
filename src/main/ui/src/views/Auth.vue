@@ -15,17 +15,21 @@
         </b-tab>
       </b-tabs>
     </b-card>
+    <Footer/>
+    
   </b-container>
 </template>
 
 <script>
 import SignInForm from "@/components/SignInForm.vue";
 import SignUpForm from "@/components/SignUpForm.vue";
+import Footer from "@/components/Footer.vue";
 
 export default {
   components: {
     SignInForm,
     SignUpForm,
+    Footer
   },
 };
 </script>

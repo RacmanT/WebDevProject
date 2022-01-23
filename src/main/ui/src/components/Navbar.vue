@@ -25,12 +25,15 @@
 
 <script>
 import firebase from "firebase/compat/app";
+import { mapMutations } from "vuex";
 
 export default {
   name: "Navbar",
 
   methods: {
+        ...mapMutations(["setTargetTrip"]),
     async signOut() {
+      this.setTargetTrip({})
       await firebase.auth().signOut();
       this.$router.replace({ name: "Authentication" });
     },

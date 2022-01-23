@@ -10,6 +10,7 @@
       b-form-datepicker
     />
 
+
     <b-list-group v-for="trip in filteredTrips(date)" v-bind:key="trip.id">
       <b-list-group-item button @click.prevent="viewTrip(trip)">{{
         trip.name
@@ -17,6 +18,7 @@
     </b-list-group>
 
     <b-button
+    v-b-tooltip.hover title="Add a new trip"
       variant="outline-success"
       class="mt-4"
       @click.prevent="addNewTrip()"

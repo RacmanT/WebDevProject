@@ -2,120 +2,135 @@
   <b-container class="mt-2">
     <h1 class="my-4">{{ title }}</h1>
 
-    <b-form-radio-group v-model="vehicle">
-      <b-form-radio value="walk" inline>
-        <i class="fas fa-walking fa-lg"></i>
-      </b-form-radio>
-      <b-form-radio value="bycicle" inline
-        ><i class="fas fa-bicycle fa-lg"></i
-      ></b-form-radio>
-      <b-form-radio value="car" inline>
-        <i class="fas fa-car-side fa-lg"></i>
-      </b-form-radio>
-    </b-form-radio-group>
+    <b-alert :show="isError" dismissible variant="danger">
+      {{ errorMsg }}
+    </b-alert>
 
-    <b-form-datepicker
-      v-model="date"
-      class="my-2"
-      required
-      menu-class="w-100"
-      calendar-width="100%"
-    />
+    <b-form @submit.prevent="save">
+      <b-form-radio-group v-model="vehicle">
+        <b-form-radio value="walk" inline>
+          <i class="fas fa-walking fa-lg"></i>
+        </b-form-radio>
+        <b-form-radio value="bycicle" inline
+          ><i class="fas fa-bicycle fa-lg"></i
+        ></b-form-radio>
+        <b-form-radio value="car" inline>
+          <i class="fas fa-car-side fa-lg"></i>
+        </b-form-radio>
+      </b-form-radio-group>
 
-    <b-form-input
-      v-model="name"
-      type="text"
-      placeholder="Enter a name for the trip"
-      required
-    ></b-form-input>
+      <b-form-datepicker
+        v-model="date"
+        class="my-2"
+        required
+        menu-class="w-100"
+        calendar-width="100%"
+      />
 
-    <b-table
-      responsive
-      borderless
-      small
-      class="mt-4"
-      :items="items"
-      :fields="fields"
-    >
-      <!-- <template v-slot:cell()="{ item, field: { key } }">
-        <b-form-input  size="sm" v-model="item[key]" />
-      </template> -->
+      <b-form-input
+        v-model="name"
+        type="text"
+        placeholder="Enter a name for the trip"
+        :state="tripNameRequired(name)"
+        required
+      ></b-form-input>
 
-      <template v-slot:cell(longitude)="row">
-        <b-form-input
-          type="number"
-          step=".000001"
-          size="sm"
-          required
-          min="0"
-          v-model="row.item.longitude"
-        />
-      </template>
+      <b-table
+        responsive
+        borderless
+        small
+        class="mt-4"
+        :items="items"
+        :fields="fields"
+      >
+        
 
-      <template v-slot:cell(latitude)="row">
-        <b-form-input
-          type="number"
-          step=".000001"
-          size="sm"
-          required
-          min="0"
-          v-model="row.item.latitude"
-        />
-      </template>
-
-      <template v-slot:cell(name)="row">
-        <b-form-input
-          size="sm"
-          v-model="row.item.name"
-          :state="nameRequired(row.item)"
-        />
-      </template>
-
-      <template v-slot:cell(important)="row">
-        <b-form-checkbox
-          size="sm"
-          v-model="row.item.important"
-          button
-          button-variant="outline"
-        >
-          <b-icon
-            v-if="row.item.important"
-            icon="star-fill"
-            variant="warning"
-            scale="1.3"
+        <template v-slot:cell(longitude)="row">
+          <b-form-input
+            type="number"
+            step=".000001"
+            size="sm"
+            required
+            min="0"
+            v-model="row.item.longitude"
           />
-          <b-icon v-else icon="star" scale="1.3" />
-        </b-form-checkbox>
-      </template>
+        </template>
 
-      <template v-slot:cell(delete)="row">
+        <template v-slot:cell(latitude)="row">
+          <b-form-input
+            type="number"
+            step=".000001"
+            size="sm"
+            required
+            min="0"
+            v-model="row.item.latitude"
+          />
+        </template>
+
+        <template v-slot:cell(name)="row">
+          <b-form-input
+            size="sm"
+            v-model="row.item.name"
+            :state="locationNameRequired(row.item)"
+            :required="row.item.important && !row.item.name"
+          />
+        </template>
+
+        <template v-slot:cell(important)="row">
+          <b-form-checkbox
+            size="sm"
+            v-model="row.item.important"
+            button
+            button-variant="outline"
+          >
+            <b-icon
+              v-if="row.item.important"
+              icon="star-fill"
+              variant="warning"
+              scale="1.3"
+            />
+            <b-icon v-else icon="star" scale="1.3" />
+          </b-form-checkbox>
+        </template>
+
+        <template v-slot:cell(delete)="row">
+          <b-button
+            variant="outline-danger"
+            size="sm"
+            @click="deletePosition(row.item)"
+          >
+            <b-icon icon="x" variant="outline-danger" scale="1.3" />
+          </b-button>
+        </template>
+      </b-table>
+      <div class="w-100">
         <b-button
-          variant="outline-danger"
-          size="sm"
-          @click="deletePosition(row.item)"
-        >
-          <b-icon icon="x" variant="outline-danger" scale="1.3" />
+          pill
+          variant="outline-success"
+          @click="addRow"
+          :disabled="lastRowIsEmpty"
+          ><b-icon icon="plus" variant="outline-success" scale="1.3" />
         </b-button>
-      </template>
-    </b-table>
-    <div class="w-100">
-      <b-button
-        pill
-        variant="outline-success"
-        @click="addRow"
-        :disabled="lastRowIsEmpty"
-        ><b-icon icon="plus" variant="outline-success" scale="1.3" />
-      </b-button>
-    </div>
+      </div>
 
-    <div class="float-right mt-3">
-      <b-button class="mx-2" variant="danger" @click="goBack()"
-        ><i class="fas fa-times"></i
-      ></b-button>
-      <b-button variant="success" @click="save()"
-        ><i class="far fa-save" i
-      /></b-button>
-    </div>
+      <div class="float-right mt-3">
+        <b-button
+          class="mx-2"
+          variant="danger"
+          @click="goBack()"
+          v-b-tooltip.hover
+          title="Cancel and go back"
+          ><i class="fas fa-times"></i
+        ></b-button>
+        <b-button
+          variant="success"
+          type="submit"
+          v-b-tooltip.hover
+          title="Save changes"
+          ><i class="far fa-save" i
+        /></b-button>
+      </div>
+    </b-form>
   </b-container>
 </template>
 
@@ -131,8 +146,9 @@ export default {
       name: "",
       vehicle: "walk",
       date: "",
-      successful: false,
       title: "",
+      isError: false,
+      errorMsg: "",
       items: [
         {
           longitude: 0,
@@ -161,6 +177,7 @@ export default {
         this.$router.replace({ name: "View trip" });
       }
     },
+
     addRow() {
       if (!this.lastRowIsEmpty) {
         this.items.push({
@@ -179,8 +196,9 @@ export default {
     },
 
     async save() {
-      if (this.date === "" || this.name === "") {
-        alert("Date cannot be empty!");
+      if (isEmpty(this.items)) {
+        this.isError = true;
+        this.errorMsg = "Path cannot be empty";
         return;
       }
 
@@ -201,18 +219,22 @@ export default {
 
       await requestREST
         .then(() => {
-          this.successful = true;
-          this.setTargetTrip(trip);
-          this.$router.replace({ name: "View trip" });
+          //this.setTargetTrip(trip);
+          this.$router.replace({ name: "Home" });
         })
         .catch((err) => {
           console.log(err);
-          this.successful = false;
+          this.isError = true;
+          this.errorMsg = "Ooops something went wrong!";
         });
     },
 
-    nameRequired(item) {
-      if (item.important && !item.name) return false;
+    locationNameRequired(item) {
+      return item.important && isEmpty(item.name) ? false : null;
+    },
+
+    tripNameRequired(name) {
+      return isEmpty(name) ? false : null;
     },
   },
   computed: {

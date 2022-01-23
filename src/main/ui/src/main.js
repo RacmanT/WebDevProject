@@ -39,8 +39,6 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-//Vue.prototype.$firebase = firebase;
-
 
 let app;
 firebase.auth().onAuthStateChanged(() => {

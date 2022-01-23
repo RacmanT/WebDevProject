@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 
 import java.io.Serializable;
 
-public class User implements Serializable{
+public class User implements Serializable {
 
     private String username;
     private String email;
@@ -21,7 +21,6 @@ public class User implements Serializable{
 
     @Override
     public String toString() {
-        //return new Gson().toJson(this);
         return new Gson().toJson(this, User.class);
     }
 

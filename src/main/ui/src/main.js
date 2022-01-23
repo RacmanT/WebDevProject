@@ -12,9 +12,9 @@ import L from "leaflet";
 import { BootstrapVueIcons } from "bootstrap-vue";
 import "bootstrap-vue/dist/bootstrap-vue-icons.min.css";
 import store from "./store";
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';//
-import 'firebase/compat/firestore';//
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth"; //
+import "firebase/compat/firestore"; //
 
 // https://github.com/Leaflet/Leaflet/issues/4968
 delete L.Icon.Default.prototype._getIconUrl;
@@ -32,13 +32,10 @@ const firebaseConfig = {
   projectId: "webdev2021-61701",
   storageBucket: "webdev2021-61701.appspot.com",
   messagingSenderId: "982645710338",
-  appId: "1:982645710338:web:f3ce18bb8d2635d324511b"
+  appId: "1:982645710338:web:f3ce18bb8d2635d324511b",
 };
 
-
-
 firebase.initializeApp(firebaseConfig);
-
 
 let app;
 firebase.auth().onAuthStateChanged(() => {
@@ -46,17 +43,9 @@ firebase.auth().onAuthStateChanged(() => {
     app = new Vue({
       router,
       store,
-      render: h => h(App)
-    }).$mount('#app')
+      render: (h) => h(App),
+    }).$mount("#app");
   }
-})
-
-
-
-/* new Vue({
-  router,
-  store,
-  render: (h) => h(App),
-}).$mount("#app"); */
+});
 
 Vue.use(BootstrapVueIcons);

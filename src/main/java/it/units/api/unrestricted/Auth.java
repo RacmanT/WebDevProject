@@ -60,10 +60,5 @@ public class Auth {
 
     }
 
-    @GET
-    public Response testUser() {
-        return Response.ok().build();
-    }
-
 
 }

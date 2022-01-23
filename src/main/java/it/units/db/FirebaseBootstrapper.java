@@ -5,13 +5,12 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Logger;
 
 @WebListener
 public class FirebaseBootstrapper implements ServletContextListener {
@@ -20,11 +19,13 @@ public class FirebaseBootstrapper implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+
+
         try {
 
-            String path = "/home/tibor/IdeaProjects/WebDevProject/src/main/webapp/WEB-INF/firebaseCredentials.json";
-
-            FileInputStream serviceAccount = new FileInputStream(path);
+            //String path = "/home/tibor/IdeaProjects/WebDevProject/src/main/webapp/WEB-INF/firebaseCredentials.json";
+            //FileInputStream serviceAccount = new FileInputStream(path);
+            InputStream serviceAccount = sce.getServletContext().getResourceAsStream("/WEB-INF/firebaseCredentials.json");
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();

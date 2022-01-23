@@ -17,8 +17,6 @@ import java.util.logging.Logger;
 public class JWTFilter implements Filter {
 
     private static final Logger log = Logger.getLogger(JWTFilter.class.toString());
-    private final String excludedPath = "/api/register";
-    private final String excludedPathOnlyInDEBUG = "/api/trip";
 
     public JWTFilter() {
     }
@@ -33,15 +31,8 @@ public class JWTFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String path = ((HttpServletRequest) request).getRequestURI();
 
-   /*     try {
-            request.setAttribute("userID", "testUserID");
-            chain.doFilter(request, response);
-        } catch (ServletException e) {
-            e.printStackTrace();
-            log.severe("ERROR: " + e.getMessage());
-        }*/
-
         try {
+            String excludedPath = "/api/register";
             if (excludedPath.equals(path)) {
                 chain.doFilter(request, response);
                 return;
@@ -55,10 +46,8 @@ public class JWTFilter implements Filter {
             if (jwtString != null) {
 
                 FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(jwtString);
-                //String userID = FirebaseAuth.getInstance().getUser(decodedToken.getUid()).getUid();
                 String userID = decodedToken.getUid();
 
-                //userID = "testUserID"; // TODO remove
                 request.setAttribute("userID", userID);
                 chain.doFilter(request, response);
             } else {

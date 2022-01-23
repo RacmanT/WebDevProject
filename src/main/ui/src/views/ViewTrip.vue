@@ -9,12 +9,19 @@
     <h1>{{ this.selectedTrip.name }} {{ usedVehicle }}</h1>
 
     <div class="float-right mb-3">
-      <b-button class="mx-2" variant="danger" @click="trashTrip()" v-b-tooltip.hover
-          title="Delete this trip"
+      <b-button
+        class="mx-2"
+        variant="danger"
+        @click="trashTrip()"
+        v-b-tooltip.hover
+        title="Delete this trip"
         ><i class="far fa-trash-alt"></i>
       </b-button>
-      <b-button variant="info" @click="editTrip()" v-b-tooltip.hover
-          title="Edit this trip"
+      <b-button
+        variant="info"
+        @click="editTrip()"
+        v-b-tooltip.hover
+        title="Edit this trip"
         ><i class="fas fa-edit"></i>
       </b-button>
     </div>

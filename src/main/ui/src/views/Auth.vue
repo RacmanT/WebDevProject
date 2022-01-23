@@ -15,8 +15,7 @@
         </b-tab>
       </b-tabs>
     </b-card>
-    <Footer/>
-    
+    <Footer />
   </b-container>
 </template>
 
@@ -29,7 +28,7 @@ export default {
   components: {
     SignInForm,
     SignUpForm,
-    Footer
+    Footer,
   },
 };
 </script>

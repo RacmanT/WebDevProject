@@ -25,7 +25,6 @@ const getters = {
 const actions = {
   async fetchTrips({ commit }) {
     const token = await firebase.auth().currentUser.getIdToken();
-    //const response = await fetch(`${process.env.VUE_APP_REST_URL}/trip`);
 
     const response = await fetch(`${process.env.VUE_APP_REST_URL}/trip`, {
       method: "GET",
@@ -37,7 +36,7 @@ const actions = {
     });
 
     const trips = await response.json();
-    commit("setTrips", trips); //commit('setTrips', response.data)
+    commit("setTrips", trips);
   },
 
   async addTrip({ commit }, trip) {

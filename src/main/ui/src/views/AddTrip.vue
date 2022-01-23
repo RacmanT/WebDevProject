@@ -43,8 +43,6 @@
         :items="items"
         :fields="fields"
       >
-        
-
         <template v-slot:cell(longitude)="row">
           <b-form-input
             type="number"
@@ -219,7 +217,6 @@ export default {
 
       await requestREST
         .then(() => {
-          //this.setTargetTrip(trip);
           this.$router.replace({ name: "Home" });
         })
         .catch((err) => {

@@ -62,21 +62,7 @@ public class TripResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateTrip(@Context HttpServletRequest request, Trip trip) {
-
-/*        try {
-
-            FirestoreClient.getFirestore()
-                    .collection("users")
-                    .document(request.getAttribute("userID").toString())
-                    .collection("trips")
-                    .document(trip.getId())
-                    .set(trip).get();
-
-            return Response.ok(trip).build();
-        } catch (InterruptedException | ExecutionException e) {
-            log.severe("Error at setTrip: " + e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }*/
+        // Firestore updating an inserting a new trip follows the same procedure
         return setTrip(request, trip);
     }
 
@@ -97,7 +83,5 @@ public class TripResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
-
-
 
 }

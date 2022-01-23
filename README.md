@@ -36,13 +36,13 @@ Requests at */register* are an exception and don't need a JWT since they are use
 
 After the demo the Firebase Authentication will have:
 <p align="center">
-    <img src="https://github.com/RacmanT/ChaosAndOrder/blob/main/screenshots/Firebase Authentication.png">
+    <img src="https://github.com/RacmanT/WebDevProject/blob/main/screenshots/Firebase%20Authentication.png">
 </p>
 
 While Firestore will be:
 
 <p align="center">
-    <img src="https://github.com/RacmanT/ChaosAndOrder/blob/main/screenshots/Firestore DB.png.png">
+    <img src="https://github.com/RacmanT/WebDevProject/blob/main/screenshots/Firestore%20DB.png">
 </p>
 
 The backend files can be found [here](https://github.com/RacmanT/WebDevProject/tree/main/src/main/java/it/units) 
